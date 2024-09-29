@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Header from "./components/Header";
+import Table from "./components/Table";
+import Entries from "./components/Entries";
 
 function App() {
+  const [pickNumbers, setPickNumbers] = useState([]);
+  const [entries, setEntries] = useState([]);
+  const [drawnNumbers, setDrawnNumbers] = useState([]);
+
+  const generateDrawnNumbers = () => {
+    let numbers = [];
+    while (numbers.length < 5) {
+      const randomNumber = Math.floor(Math.random() * 50) + 1;
+      if (!numbers.includes(randomNumber)) {
+        numbers.push(randomNumber);
+      }
+    }
+    setDrawnNumbers(numbers);
+    return numbers;
+  };
+
+  const addEntry = (selectedNumbers) => {
+    if (entries.length < 5) {
+      setEntries([...entries, selectedNumbers]);
+      setPickNumbers(selectedNumbers);
+    } else {
+      alert("You can only have 5 entries!");
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div>
+        <Header
+          onDrawComplete={generateDrawnNumbers}
+          pickNumbers={pickNumbers}
+          drawnNumbers={drawnNumbers}
+        />
+      </div>
+      <div className="flex-container">
+        <Table
+          addEntry={addEntry}
+          pickNumbers={pickNumbers}
+          setEntries={setEntries}
+        />
+        <Entries entries={entries} drawnNumbers={drawnNumbers} />
+      </div>
     </div>
   );
 }
